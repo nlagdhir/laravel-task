@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Film;
 use App\Genre;
+use App\Comment;
 use Validator;
+use View;
 
 class ApiController extends Controller
 {
@@ -15,9 +17,10 @@ class ApiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getFilms()
     {
-        
+        $film = Film::with('genres')->paginate(1);
+        return View::make('films.ajaxView')->with('film', $film)->render();
     }
 
 
@@ -62,7 +65,7 @@ class ApiController extends Controller
             $extension = $requestedImage->getClientOriginalExtension();
             $filename = md5(time() . str_random(12)) . '.' . $extension;
             $requestedImage->storeAs('uploads/films', $filename);
-            $film->photo = Storage::url('uploads/films/' . $filename);
+            $film->photo = $filename;
         }
 		if($film->save()){
 			foreach ($request->get('genre') as $genreName) {

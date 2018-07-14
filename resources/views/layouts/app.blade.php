@@ -160,8 +160,10 @@ function showRequest(formData, jqForm, options) {
  
 // post-submit callback 
 function showResponse(responseText, statusText, xhr, $form)  { 
-    alert('status: ' + statusText + '\n\nresponseText: \n' + responseText + 
-        '\n\nThe output div should have already been updated with the responseText.'); 
+    if(responseText.status == 1){
+        alert(responseText.message);
+        document.location.href="{{ route('films') }}"
+    }
     $("#AddFilmForm .submitForm").removeAttr('disabled');
     $("#AddFilmForm .submitForm").text("Create Film");
 } 
