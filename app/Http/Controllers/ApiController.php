@@ -20,7 +20,7 @@ class ApiController extends Controller
     public function getFilms()
     {
         $film = Film::with('genres')->paginate(1);
-        return View::make('films.ajaxView')->with('film', $film)->render();
+        return View::make('films.load')->with('film', $film)->render();
     }
 
 

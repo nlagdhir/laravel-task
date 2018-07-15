@@ -13,4 +13,12 @@ class Comment extends Model
     {
     	return $this->belongsTo(Film::class);
     }
+
+    /*
+    * return user of perticular comment
+    */
+    public function user()
+    {
+    	return $this->belongsTo(User::class);
+    }
 }

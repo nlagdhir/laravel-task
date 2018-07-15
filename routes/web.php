@@ -19,6 +19,11 @@ Route::get('/', function () {
 Route::get('films','FilmsController@index')->name('films');
 Route::get('films/create','FilmsController@create')->name('film.create');
 Route::post('films/create','FilmsController@store')->name('film.store');
+Route::get('film/{slug}','FilmsController@show')->name('film.show');
+
 Auth::routes();
 
+Route::middleware(['auth'])->group(function() {
+	Route::post('film/{id}/comment','FilmsController@postComment')->name('film.comment');
+});
 Route::get('/home', 'HomeController@index')->name('home');

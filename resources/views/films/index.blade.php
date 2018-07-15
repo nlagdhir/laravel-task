@@ -8,7 +8,11 @@
                 <div class="card-header">Films</div>
 
                 <div class="card-body" id="view-film">
-                    
+                    @if (count($films) > 0)
+                    <section class="films">
+                        @include('films.load')
+                    </section>
+                	@endif
                 </div>
             </div>
         </div>

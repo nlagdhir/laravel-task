@@ -84,6 +84,9 @@
     <script src="http://malsup.github.com/jquery.form.js"></script> 
     <script type="text/javascript">
     jQuery(document).ready(function(){
+
+        $('div.alert').not('.alert-important').delay(3000).fadeOut(350);
+
         jQuery('#release_date').datepicker({  
             format: 'yyyy-mm-dd',
             startDate: new Date(),
@@ -107,6 +110,17 @@
             jQuery(this).parent('div').remove();
             x--;
         });
+
+        jQuery('body').on('click', '.pagination a', function(e) {
+        e.preventDefault();
+
+        jQuery('#load a').css('color', '#dfecf6');
+        jQuery('#load').append('<img style="position: absolute; left: 0; top: 0; z-index: 100000;" src="/images/loading.gif" />');
+
+        var url = $(this).attr('href');  
+        getFilms(url);
+        window.history.pushState("", "", url);
+    });
 
         /*jQuery(document).on('submit','#AddFilmForm',function(e){
             e.preventDefault();
@@ -150,6 +164,18 @@ $(document).ready(function() {
         return false; 
     }); 
 }); 
+
+function getFilms(url) {
+    $.ajax({
+        url : url,
+        success : function(data){
+            $('.films').html(data);  
+        },
+        error : function(){
+            alert('Films could not be loaded.');
+        },
+    });
+}
  
 // pre-submit callback 
 function showRequest(formData, jqForm, options) { 
