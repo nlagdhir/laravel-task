@@ -4,7 +4,7 @@
     <div class="row">
         @if($film && $film->count()>0)
         <div class="col-md-4 post-img">
-            <img class="img-responsive1" width="300" src="{{ asset('storage/uploads/films/') }}/{{ $film->photo }}" alt="{{ $film->name }}">
+            <img class="img-responsive" width="300" src="{{ asset('storage/') }}/{{ $film->photo }}" alt="{{ $film->name }}">
         </div>
         <div class="col-md-8">
             <h3>{{ $film->name }}</h3>

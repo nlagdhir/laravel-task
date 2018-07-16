@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,6 +21,7 @@
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 
 </head>
+
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
@@ -44,30 +46,29 @@
                             <a class="nav-link" href="{{ route('film.create') }}">{{ __('Add Film') }}</a>
                         </li>
                         @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                        </li>
                         @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <li class="nav-item dropdown">
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
                         @endguest
                     </ul>
                 </div>
@@ -81,138 +82,113 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
-    <script src="http://malsup.github.com/jquery.form.js"></script> 
+    <script src="http://malsup.github.com/jquery.form.js"></script>
     <script type="text/javascript">
-    jQuery(document).ready(function(){
+        jQuery(document).ready(function() {
 
-        $('div.alert').not('.alert-important').delay(3000).fadeOut(350);
+            $('div.alert').not('.alert-important').delay(3000).fadeOut(350);
 
-        jQuery('#release_date').datepicker({  
-            format: 'yyyy-mm-dd',
-            startDate: new Date(),
-            autoclose: true,
-        });  
-
-        var addButton = jQuery('.add_button');
-        var wrapper = jQuery('.genre_wrapper');
-        var fieldHTML = '<div><input type="text" class="form-control width90" name="genre[]"><a href="javascript:void(0);" class="remove_button genre-control"><img src="{{ asset("images/remove-icon.png") }}"/></a></div>';
-        var x = 1;
-        
-        //Once add button is clicked
-        jQuery(addButton).click(function(){
-            x++;
-            jQuery(wrapper).append(fieldHTML);
-        });
-        
-        //Once remove button is clicked
-        jQuery(wrapper).on('click', '.remove_button', function(e){
-            e.preventDefault();
-            jQuery(this).parent('div').remove();
-            x--;
-        });
-
-        jQuery('body').on('click', '.pagination a', function(e) {
-        e.preventDefault();
-
-        jQuery('#load a').css('color', '#dfecf6');
-        jQuery('#load').append('<img style="position: absolute; left: 0; top: 0; z-index: 100000;" src="/images/loading.gif" />');
-
-        var url = $(this).attr('href');  
-        getFilms(url);
-        window.history.pushState("", "", url);
-    });
-
-        /*jQuery(document).on('submit','#AddFilmForm',function(e){
-            e.preventDefault();
-            var ajaxUrl = $(this).attr('action');
-            var image = $('#image')[0].files[0];
-            new form = new FormData();
-            form.append('name', $('#name').val());
-            form.append('description', $('#description').val());
-            form.append('release_date', $('#release_date').val());
-            form.append('rating', $('#rating').val());
-            form.append('ticket_price', $('#ticket_price').val());
-            form.append('country', $('#country').val());
-            form.append('image', image);
-
-            $.ajax({
-              url: ajaxUrl,
-              data: form,
-              cache: false,
-              contentType: false,
-              processData: false,
-              type: 'POST',
-              success:function(response){
-                console.log(response);
-              },
+            jQuery('#release_date').datepicker({
+                format: 'yyyy-mm-dd',
+                startDate: new Date(),
+                autoclose: true,
             });
-        });*/
-        
-    });
 
-    // prepare the form when the DOM is ready 
-$(document).ready(function() { 
-    var options = { 
-        beforeSubmit:  showRequest,
-        success:       showResponse,
-        error: showErrors
-    }; 
- 
-    // bind to the form's submit event 
-    $('#AddFilmForm').submit(function() { 
-        $(this).ajaxSubmit(options); 
-        return false; 
-    }); 
-}); 
+            // add more genre 
+            var addButton = jQuery('.add_button');
+            var wrapper = jQuery('.genre_wrapper');
+            var fieldHTML = '<div><input type="text" class="form-control width90" name="genre[]"><a href="javascript:void(0);" class="remove_button genre-control"><img src="{{ asset("images/remove-icon.png") }}"/></a></div>';
+            var x = 1;
 
-function getFilms(url) {
-    $.ajax({
-        url : url,
-        success : function(data){
-            $('.films').html(data);  
-        },
-        error : function(){
-            alert('Films could not be loaded.');
-        },
-    });
-}
- 
-// pre-submit callback 
-function showRequest(formData, jqForm, options) { 
-    $("#AddFilmForm .submitForm").text("loading");
-    $("#AddFilmForm .submitForm").attr('disabled', 'disabled');
-    return true; 
-} 
- 
-// post-submit callback 
-function showResponse(responseText, statusText, xhr, $form)  { 
-    if(responseText.status == 1){
-        alert(responseText.message);
-        document.location.href="{{ route('films') }}"
-    }
-    $("#AddFilmForm .submitForm").removeAttr('disabled');
-    $("#AddFilmForm .submitForm").text("Create Film");
-} 
+            //Once add button is clicked
+            jQuery(addButton).click(function() {
+                x++;
+                jQuery(wrapper).append(fieldHTML);
+            });
 
-function showErrors(errors){
-    $("#AddFilmForm .is-invalid").removeClass("is-invalid");
-    $('#AddFilmForm .invalid-feedback').html('');
-    $("#AddFilmForm .submitForm").removeAttr('disabled');
-    $("#AddFilmForm .submitForm").text("Create Film");
-    if (errors.responseJSON.errors) {
-      for (var i in errors.responseJSON.errors) {
-          if (i.indexOf("genre.") >= 0){
-            $("#AddFilmForm .genre_section input").addClass('is-invalid');  
-            $("#AddFilmForm .genre_section .invalid-feedback").html(errors.responseJSON.errors[i]);
-          }
-          $("#AddFilmForm ." + i + "_section input").addClass('is-invalid');
-          $("#AddFilmForm ." + i + "_section textarea").addClass('is-invalid');
-          $("#AddFilmForm ." + i + "_section .invalid-feedback").removeClass('hide');
-          $("#AddFilmForm ." + i + "_section .invalid-feedback").html(errors.responseJSON.errors[i]);
-      }
-    }
-}
+            //Once remove button is clicked
+            jQuery(wrapper).on('click', '.remove_button', function(e) {
+                e.preventDefault();
+                jQuery(this).parent('div').remove();
+                x--;
+            });
 
-</script> 
+            jQuery('body').on('click', '.pagination a', function(e) {
+                e.preventDefault();
+
+                jQuery('#load a').css('color', '#dfecf6');
+                jQuery('#load').append('<img style="position: absolute; left: 0; top: 0; z-index: 100000;" src="{{ asset("images/loader.gif") }}" />');
+
+                var url = $(this).attr('href');
+                getFilms(url);
+                window.history.pushState("", "", url);
+            });
+
+        });
+
+        // prepare the form when the DOM is ready 
+        $(document).ready(function() {
+            var options = {
+                beforeSubmit: showRequest,
+                success: showResponse,
+                error: showErrors
+            };
+
+            // bind to the form's submit event 
+            $('#AddFilmForm').submit(function() {
+                $(this).ajaxSubmit(options);
+                return false;
+            });
+        });
+
+        function getFilms(url) {
+            $.ajax({
+                url: url,
+                success: function(data) {
+                    $('.films').html(data);
+                },
+                error: function() {
+                    alert('Films could not be loaded.');
+                },
+            });
+        }
+
+        // pre-submit callback 
+        function showRequest(formData, jqForm, options) {
+            $("#AddFilmForm .submitForm").text("loading");
+            $("#AddFilmForm .submitForm").attr('disabled', 'disabled');
+            return true;
+        }
+
+        // post-submit callback 
+        function showResponse(responseText, statusText, xhr, $form) {
+            if (responseText.status == 1) {
+                alert(responseText.message);
+                document.location.href = "{{ route('films') }}"
+            }
+            $("#AddFilmForm .submitForm").removeAttr('disabled');
+            $("#AddFilmForm .submitForm").text("Create Film");
+        }
+
+        function showErrors(errors) {
+            $("#AddFilmForm .is-invalid").removeClass("is-invalid");
+            $('#AddFilmForm .invalid-feedback').html('');
+            $("#AddFilmForm .submitForm").removeAttr('disabled');
+            $("#AddFilmForm .submitForm").text("Create Film");
+            if (errors.responseJSON.errors) {
+                for (var i in errors.responseJSON.errors) {
+                    if (i.indexOf("genre.") >= 0) {
+                        $("#AddFilmForm .genre_section input").addClass('is-invalid');
+                        $("#AddFilmForm .genre_section .invalid-feedback").html(errors.responseJSON.errors[i]);
+                    }
+                    $("#AddFilmForm ." + i + "_section input").addClass('is-invalid');
+                    $("#AddFilmForm ." + i + "_section textarea").addClass('is-invalid');
+                    $("#AddFilmForm ." + i + "_section .invalid-feedback").removeClass('hide');
+                    $("#AddFilmForm ." + i + "_section .invalid-feedback").html(errors.responseJSON.errors[i]);
+                }
+            }
+        }
+    </script>
 </body>
+
 </html>

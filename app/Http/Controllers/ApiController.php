@@ -13,18 +13,6 @@ use View;
 class ApiController extends Controller
 {
     /**
-     * Display a listing of all films.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getFilms()
-    {
-        $film = Film::with('genres')->paginate(1);
-        return View::make('films.load')->with('film', $film)->render();
-    }
-
-
-    /**
     * Store film 
     *
     */
@@ -64,7 +52,7 @@ class ApiController extends Controller
 			$requestedImage = $request->file('photo');
             $extension = $requestedImage->getClientOriginalExtension();
             $filename = md5(time() . str_random(12)) . '.' . $extension;
-            $requestedImage->storeAs('uploads/films', $filename);
+            $requestedImage->storeAs('/', $filename);
             $film->photo = $filename;
         }
 		if($film->save()){

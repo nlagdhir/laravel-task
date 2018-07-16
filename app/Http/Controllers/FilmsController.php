@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Comment;
 use App\Film;
+use View;
 
 class FilmsController extends Controller
 {
@@ -18,7 +19,7 @@ class FilmsController extends Controller
         $films = Film::latest()->paginate(1);
 
         if ($request->ajax()) {
-            view('films.load', ['films' => $films])->render();  
+            return View::make('films.load', ['films' => $films])->render();  
         }
 
         return view('films.index', compact('films'));
@@ -32,29 +33,6 @@ class FilmsController extends Controller
     public function create()
     {
         return view('films.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $rules = [
-            'name' => 'required|unique:films|max:191',
-            'description' => 'required',
-            'release_date' => 'required',
-            'rating' => 'required|integer|between:1,5',
-            'ticket_price' => 'required|numeric|between:0,999999.99',
-            'country' => 'required|max:191',
-            'genre.*' => 'required',
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ];
-
-        $request->validate($rules);
-        return $request->all();
     }
 
     /**
@@ -73,6 +51,9 @@ class FilmsController extends Controller
         return view('films.show',compact('film'));
     }
 
+    /**
+    * Post comment to a film
+    */
     public function postComment(Request $request, $id)
     {
         $rules = [
@@ -93,39 +74,5 @@ class FilmsController extends Controller
             flash('Comment could not added!')->error();
         }
         return redirect()->back();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
